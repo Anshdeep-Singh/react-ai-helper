@@ -62,16 +62,16 @@ export default function Hero() {
       <div className="w-full max-w-3xl space-y-8">
         <div className="flex flex-col items-center gap-4 text-center">
           <h1 className="text-4xl font-bold leading-tight tracking-tighter md:text-5xl lg:text-6xl lg:leading-[1.1]">
-            Ask Your Question
+            Hash AI Code Editor
           </h1>
           <p className="max-w-[750px] text-lg text-muted-foreground sm:text-xl">
-            Enter your question below and get instant help from our AI assistant.
+            What do you want to build?
           </p>
         </div>
 
         <div className="space-y-4">
           <Textarea
-            placeholder="Type your question here..."
+            placeholder="Enter your prompt here..."
             className="min-h-[200px] resize-none rounded-lg shadow-sm"
             value={userInput}
             onChange={(e) => setUserInput(e.target.value)}
