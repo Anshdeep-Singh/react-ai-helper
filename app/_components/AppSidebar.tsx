@@ -39,7 +39,7 @@ export function AppSidebar() {
       const workspacesMessages = snapshot.docs.map(doc => doc.data().messages[0].content)
       setWorkspaces(workspacesData)
       setWorkspacesMessages(workspacesMessages)
-      console.log(workspacesMessages)
+      // console.log(workspacesMessages)
     })
 
     // Cleanup subscription

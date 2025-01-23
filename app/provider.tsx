@@ -60,7 +60,7 @@ export function Provider({
                   <div className="flex flex-col w-full h-full">
                     <Header />
                     {user && (
-                      <div className="absolute left-auto size-12 top-20 z-50">
+                      <div className="absolute left-auto size-12 top-20 z-50 px-7">
                         <SidebarTrigger onMouseEnter={() => setIsOpen(true)} />
                       </div>
                     )}

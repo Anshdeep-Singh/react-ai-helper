@@ -41,9 +41,9 @@ const CodeView = ({ id }: { id: string }) => {
     setIsLoading(true);
     const workspaceRef = doc(db, "workspaces", user.uid, "userWorkspaces", id).withConverter(workspaceConverter);
     const workspace = await getDoc(workspaceRef);
-    console.log("Getting from database");
+    // console.log("Getting from database");
     if (workspace.data()?.fileData) {
-      console.log("workspace.data()?.fileData : ", JSON.stringify(workspace.data()?.fileData));
+    //   console.log("workspace.data()?.fileData : ", JSON.stringify(workspace.data()?.fileData));
       setFileHistory(JSON.stringify(workspace.data()?.fileData));
       const mergedFiles = { ...SetupConfig.DEFAULT_FILE, ...workspace.data()?.fileData };
       setFiles(mergedFiles);
@@ -63,14 +63,14 @@ const CodeView = ({ id }: { id: string }) => {
         setIsLoading(true);
         const PROMPT = JSON.stringify(messages) + " #####\n " + Prompts.CODE_GEN_PROMPT + " \n ##### Past File History Only For Reference#####\n " + fileHistory;
         // const PROMPT = JSON.stringify(messages) + " #####\n " + Prompts.CODE_GEN_PROMPT;
-        console.log("PROMPT", PROMPT);
+        // console.log("PROMPT", PROMPT);
         
         // Get the response stream
         const response = await chatSessionAiFiles.sendMessage(PROMPT);
         
         // Wait for the response to complete
         const text = await response.response.text();
-        console.log("Complete response text:", text);
+        // console.log("Complete response text:", text);
 
         if (!text) {
           console.error("Response text is empty");

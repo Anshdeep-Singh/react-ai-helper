@@ -49,7 +49,7 @@ export default function Hero() {
     
     try {
       await setDoc(workspaceRef, newWorkspace);
-      console.log("Workspace created successfully:", workspaceId);
+      // console.log("Workspace created successfully:", workspaceId);
       router.push('/workspace/'+workspaceId);
       
     } catch (error) {

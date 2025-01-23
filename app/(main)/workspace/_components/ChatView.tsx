@@ -34,7 +34,7 @@ const ChatView = ({ id }: { id: string }) => {
 
   useEffect(() => {
     const fetchWorkspace = async () => {
-      console.log("Current user state:", user);
+    //   console.log("Current user state:", user);
 
       if (!user?.uid) {
         console.log("No user found");
@@ -72,12 +72,11 @@ const ChatView = ({ id }: { id: string }) => {
     setIsLoading(true);
     try {
       const PROMPT = JSON.stringify(messages) + Prompts.CHAT_PROMPT;
-      console.log("PROMPT", PROMPT);
+    //   console.log("PROMPT", PROMPT);
       const response = await chatSession.sendMessage(PROMPT);
       const responseText = await response.response.text();
       const responseData = JSON.parse(responseText);
-      console.log("responseData", responseData);
-      console.log("responseData", responseData[0].response);
+    //   console.log("responseData", responseData[0].response);
 
       if (!responseData[0]?.response) {
         throw new Error("Invalid AI response format");
