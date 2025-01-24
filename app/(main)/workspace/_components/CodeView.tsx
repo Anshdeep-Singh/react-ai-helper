@@ -21,6 +21,7 @@ import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "@/database/firebase";
 import { Loader } from "lucide-react";
 import { GenerateCodeContext } from "@/context/generateCodeContext";
+import SandpackPreviewClient from "./SandpackPreviewClient";
 
 const CodeView = ({ id }: { id: string }) => {
   const [openPreview, setOpenPreview] = useState(false);
@@ -29,79 +30,101 @@ const CodeView = ({ id }: { id: string }) => {
   const { user } = useContext(AuthContext);
   const { messages, setMessages } = useContext(ChatContext);
   const { isGenerating, setIsGenerating } = useContext(GenerateCodeContext);
-  const [fileHistory, setFileHistory] = useState('');
+  const [fileHistory, setFileHistory] = useState("");
 
-  const SaveInDatabase = async ( files: any) => {
-    const workspaceRef = doc(db, "workspaces", user?.uid, "userWorkspaces", id).withConverter(workspaceConverter);
+  const SaveInDatabase = async (files: any) => {
+    const workspaceRef = doc(
+      db,
+      "workspaces",
+      user?.uid,
+      "userWorkspaces",
+      id
+    ).withConverter(workspaceConverter);
     await updateDoc(workspaceRef, { fileData: files });
     setFileHistory(JSON.stringify(files));
-  }
+  };
 
   const GetFromDatabase = async () => {
     setIsLoading(true);
-    const workspaceRef = doc(db, "workspaces", user.uid, "userWorkspaces", id).withConverter(workspaceConverter);
+    const workspaceRef = doc(
+      db,
+      "workspaces",
+      user.uid,
+      "userWorkspaces",
+      id
+    ).withConverter(workspaceConverter);
     const workspace = await getDoc(workspaceRef);
     // console.log("Getting from database");
     if (workspace.data()?.fileData) {
-    //   console.log("workspace.data()?.fileData : ", JSON.stringify(workspace.data()?.fileData));
+      //   console.log("workspace.data()?.fileData : ", JSON.stringify(workspace.data()?.fileData));
       setFileHistory(JSON.stringify(workspace.data()?.fileData));
-      const mergedFiles = { ...SetupConfig.DEFAULT_FILE, ...workspace.data()?.fileData };
+      const mergedFiles = {
+        ...SetupConfig.DEFAULT_FILE,
+        ...workspace.data()?.fileData,
+      };
       setFiles(mergedFiles);
     }
     setIsLoading(false);
-  }
+  };
 
   useEffect(() => {
     if (id && user?.uid) {
       GetFromDatabase();
     }
   }, [id, user?.uid]);
-  
 
   const generateAiCode = async () => {
-     try {
-        setIsLoading(true);
-        const PROMPT = JSON.stringify(messages) + " #####\n " + Prompts.CODE_GEN_PROMPT + " \n ##### Past File History Only For Reference#####\n " + fileHistory;
-        // const PROMPT = JSON.stringify(messages) + " #####\n " + Prompts.CODE_GEN_PROMPT;
-        // console.log("PROMPT", PROMPT);
-        
-        // Get the response stream
-        const response = await chatSessionAiFiles.sendMessage(PROMPT);
-        
-        // Wait for the response to complete
-        const text = await response.response.text();
-        // console.log("Complete response text:", text);
+    try {
+      setIsLoading(true);
+      const PROMPT =
+        JSON.stringify(messages) +
+        " #####\n " +
+        Prompts.CODE_GEN_PROMPT +
+        " \n ##### Past File History Only For Reference#####\n " +
+        fileHistory;
+      // const PROMPT = JSON.stringify(messages) + " #####\n " + Prompts.CODE_GEN_PROMPT;
+      // console.log("PROMPT", PROMPT);
 
-        if (!text) {
-          console.error("Response text is empty");
-          return;
-        }
+      // Get the response stream
+      const response = await chatSessionAiFiles.sendMessage(PROMPT);
 
-        try {
-          const aiResponse = JSON.parse(text);
-          const mergedFiles = { ...SetupConfig.DEFAULT_FILE, ...aiResponse?.files };
-          setFiles(mergedFiles);
-          await SaveInDatabase(aiResponse?.files);
-        } catch (parseError) {
-          console.error("Failed to parse response text:", text);
-          console.error("Parse error:", parseError);
-        }
-     } catch (error) {
-        console.error("Error generating AI code:", error);
-     } finally {
-        setIsLoading(false);
-        setOpenPreview(true);
-     }
-  }
+      // Wait for the response to complete
+      const text = await response.response.text();
+      // console.log("Complete response text:", text);
+
+      if (!text) {
+        console.error("Response text is empty");
+        return;
+      }
+
+      try {
+        const aiResponse = JSON.parse(text);
+        const mergedFiles = {
+          ...SetupConfig.DEFAULT_FILE,
+          ...aiResponse?.files,
+        };
+        setFiles(mergedFiles);
+        await SaveInDatabase(aiResponse?.files);
+      } catch (parseError) {
+        console.error("Failed to parse response text:", text);
+        console.error("Parse error:", parseError);
+      }
+    } catch (error) {
+      console.error("Error generating AI code:", error);
+    } finally {
+      setIsLoading(false);
+      setOpenPreview(true);
+    }
+  };
 
   useEffect(() => {
     if (messages.length > 0 && !isGenerating) {
-        const role = messages[messages.length - 1].role;
-        if (role === "assistant") {
-            generateAiCode();
-            setIsGenerating(true);
-        }
+      const role = messages[messages.length - 1].role;
+      if (role === "assistant") {
+        generateAiCode();
+        setIsGenerating(true);
       }
+    }
   }, [messages, fileHistory, isGenerating]);
 
   return (
@@ -131,7 +154,7 @@ const CodeView = ({ id }: { id: string }) => {
           </span>
         </Button>
       </div>
-    
+
       <div className="relative">
         <SandpackProvider
           template="react"
@@ -162,29 +185,18 @@ const CodeView = ({ id }: { id: string }) => {
                   showRunButton={true}
                   showInlineErrors={true}
                   closableTabs={true}
-                  wrapContent={true}   
+                  wrapContent={true}
                   style={{
                     height: "100%",
                     flex: 1,
                   }}
-                  
                 />
               </>
             )}
             {openPreview && (
-              <SandpackPreview
-              showOpenInCodeSandbox={true}
-              showRefreshButton={true}
-              showRestartButton={true}
-              showOpenNewtab={true}
-                style={{
-                  height: "100%",
-                  width: "100%",
-                  minWidth: "100%",
-                  
-                }}
-                showNavigator={true}
-              />
+              <>
+                <SandpackPreviewClient />
+              </>
             )}
           </SandpackLayout>
         </SandpackProvider>

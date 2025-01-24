@@ -62,7 +62,7 @@ export default function Hero() {
       <div className="w-full max-w-3xl space-y-8">
         <div className="flex flex-col items-center gap-4 text-center">
           <h1 className="text-4xl font-bold leading-tight tracking-tighter md:text-5xl lg:text-6xl lg:leading-[1.1]">
-            Hash AI Code Editor
+            # AI Coder
           </h1>
           <p className="max-w-[750px] text-lg text-muted-foreground sm:text-xl">
             What do you want to build?
