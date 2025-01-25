@@ -71,7 +71,7 @@ export default function Hero() {
 
         <div className="space-y-4">
           <Textarea
-            placeholder="Enter your prompt here..."
+            placeholder="Enter your prompt here... (e.g. 'Create a todo list app' or 'Create a calculator app') "
             className="min-h-[200px] resize-none rounded-lg shadow-sm"
             value={userInput}
             onChange={(e) => setUserInput(e.target.value)}
@@ -82,7 +82,7 @@ export default function Hero() {
               onClick={handleGenerateAnswer}
               className="px-8 py-2 text-lg transition-transform hover:scale-105"
             >
-              Get Answer
+              Generate Project
             </Button>
           </div>
         </div>
